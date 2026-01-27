@@ -1,11 +1,199 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login Azul</title>
+    <style>
+        /* CSS embutido para simplicidade */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .container { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 15px; 
+            box-shadow: 0 15px 35px rgba(0,123,255,0.4); 
+            width: 90%; 
+            max-width: 350px; 
+        }
+        h1 { 
+            text-align: center; 
+            color: #004085; 
+            margin-bottom: 1.5rem; 
+        }
+        .input-group { 
+            margin-bottom: 1rem; 
+        }
+        label { 
+            display: block; 
+            color: #495057; 
+            margin-bottom: 0.5rem; 
+            font-weight: bold; 
+        }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #dee2e6; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            transition: border-color 0.3s; 
+        }
+        input:focus { 
+            outline: none; 
+            border-color: #007BFF; 
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.2); 
+        }
+        input.error { 
+            border-color: #dc3545; 
+        }
+        .error-msg { 
+            color: #dc3545; 
+            font-size: 14px; 
+            margin-top: 5px; 
+            display: none; 
+        }
+        .checkbox { 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 1.5rem; 
+        }
+        .checkbox input { 
+            width: auto; 
+            margin-right: 10px; 
+        }
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            background: #007BFF; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: background 0.3s; 
+        }
+        button:hover { 
+            background: #0056b3; 
+        }
+        button:disabled { 
+            background: #6c757d; 
+            cursor: not-allowed; 
+        }
+        .link { 
+            text-align: center; 
+            margin-top: 1rem; 
+        }
+        .link a { 
+            color: #007BFF; 
+            text-decoration: none; 
+        }
+    </style>
 </head>
 <body>
-    
+    <div class="container">
+        <form id="loginForm">
+            <h1>Login Seguro</h1>
+            
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+                <div class="error-msg" id="emailError">Email inválido ou em branco</div>
+            </div>
+            
+            <div class="input-group">
+                <label for="confirmEmail">Confirme Email</label>
+                <input type="email" id="confirmEmail" required>
+                <div class="error-msg" id="confirmEmailError">Emails não conferem</div>
+            </div>
+            
+            <div class="input-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" required minlength="6">
+                <div class="error-msg" id="senhaError">Senha deve ter pelo menos 6 caracteres</div>
+            </div>
+            
+            <label class="checkbox">
+                <input type="checkbox" id="lembrar"> Lembrar-me
+            </label>
+            
+            <button type="submit" id="btnEntrar" disabled>Entrar</button>
+            
+            <div class="link">
+                <a href="#">Esqueceu a senha?</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const email = document.getElementById('email');
+        const confirmEmail = document.getElementById('confirmEmail');
+        const senha = document.getElementById('senha');
+        const btnEntrar = document.getElementById('btnEntrar');
+
+        // Regex simples para email [web:16]
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validateForm() {
+            const emailVal = email.value.trim();
+            const confirmVal = confirmEmail.value.trim();
+            const senhaVal = senha.value;
+
+            // Reset erros
+            document.querySelectorAll('.error-msg').forEach(el => {
+                el.style.display = 'none';
+                el.previousElementSibling.classList.remove('error');
+            });
+
+            let isValid = true;
+
+            // Valida email
+            if (!emailVal || !validateEmail(emailVal)) {
+                document.getElementById('emailError').style.display = 'block';
+                email.classList.add('error');
+                isValid = false;
+            }
+
+            // Confirma email
+            if (confirmVal !== emailVal) {
+                document.getElementById('confirmEmailError').style.display = 'block';
+                confirmEmail.classList.add('error');
+                isValid = false;
+            }
+
+            // Valida senha
+            if (senhaVal.length < 6) {
+                document.getElementById('senhaError').style.display = 'block';
+                senha.classList.add('error');
+                isValid = false;
+            }
+
+            btnEntrar.disabled = !isValid;
+            return isValid;
+        }
+
+        // Eventos em tempo real
+        email.addEventListener('input', validateForm);
+        confirmEmail.addEventListener('input', validateForm);
+        senha.addEventListener('input', validateForm);
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (validateForm()) {
+                alert('Login confirmado! Emails batem e senha válida.');
+            }
+        });
+    </script>
 </body>
 </html>
