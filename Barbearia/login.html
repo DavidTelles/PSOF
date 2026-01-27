@@ -3,310 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Azul</title>
+    <title>Barbearia Login</title>
     <style>
         /* CSS embutido para simplicidade */
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body { 
             font-family: Arial, sans-serif; 
-            background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+            /* Fundo multicolorido gradiente */
+            background: linear-gradient(-45deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             height: 100vh; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
+            position: relative;
+            overflow: hidden;
         }
+
+        /* Animação do gradiente */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Desenhos de barbearia no fundo */
+        .barber-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            z-index: 1;
+        }
+
+        .scissors { 
+            position: absolute;
+            font-size: 80px;
+            color: rgba(255,255,255,0.3);
+            animation: float 6s ease-in-out infinite;
+        }
+        .razor { 
+            position: absolute;
+            font-size: 60px;
+            color: rgba(255,255,255,0.2);
+            animation: float 8s ease-in-out infinite reverse;
+        }
+        .comb { 
+            position: absolute;
+            font-size: 50px;
+            color: rgba(255,255,255,0.25);
+            animation: float 7s ease-in-out infinite;
+        }
+        .mustache { 
+            position: absolute;
+            font-size: 70px;
+            color: rgba(255,255,255,0.15);
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
         .container { 
-            background: rgba(255, 255, 255, 0.1); /* Azul claro transparente */
-            backdrop-filter: blur(10px);
-            padding: 2rem; 
-            border-radius: 15px; 
-            box-shadow: 0 15px 35px rgba(0,123,255,0.4); 
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            padding: 2.5rem; 
+            border-radius: 20px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
             width: 90%; 
-            max-width: 400px; 
-            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 420px; 
+            border: 1px solid rgba(255,255,255,0.3);
+            position: relative;
+            z-index: 10;
         }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .logo::before {
+            content: "✂️💈";
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
         .tabs {
             display: flex;
             margin-bottom: 1.5rem;
-            background: rgba(255,255,255,0.2);
-            border-radius: 10px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 12px;
             overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .tab-btn {
             flex: 1;
-            padding: 12px;
+            padding: 14px;
             background: none;
             border: none;
-            color: rgba(255,255,255,0.8);
+            color: rgba(255,255,255,0.9);
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 15px;
         }
         .tab-btn.active {
-            background: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.4);
             color: white;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
         }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
         h1 { 
             text-align: center; 
             color: white; 
             margin-bottom: 1.5rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            font-size: 1.6rem;
         }
-        .input-group { 
-            margin-bottom: 1rem; 
-        }
+        .input-group { margin-bottom: 1.2rem; }
         label { 
             display: block; 
             color: white; 
-            margin-bottom: 0.5rem; 
+            margin-bottom: 0.6rem; 
             font-weight: bold;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.4);
         }
         input { 
             width: 100%; 
-            padding: 12px; 
-            border: 2px solid rgba(255,255,255,0.3); 
-            border-radius: 8px; 
+            padding: 14px; 
+            border: 2px solid rgba(255,255,255,0.4); 
+            border-radius: 10px; 
             font-size: 16px; 
             transition: all 0.3s;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.15);
             color: white;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
         }
-        input::placeholder {
-            color: rgba(255,255,255,0.7);
-        }
+        input::placeholder { color: rgba(255,255,255,0.8); }
         input:focus { 
             outline: none; 
-            border-color: #4dabf7; 
-            box-shadow: 0 0 0 3px rgba(77,171,247,0.3); 
-            background: rgba(255,255,255,0.2);
+            border-color: #ffd700; /* Dourado no foco */
+            box-shadow: 0 0 0 4px rgba(255,215,0,0.3); 
+            background: rgba(255,255,255,0.25);
         }
         input.error { 
-            border-color: #ff6b6b; 
-            background: rgba(255,107,107,0.1);
+            border-color: #ff4757; 
+            background: rgba(255,71,87,0.15);
+            box-shadow: 0 0 0 3px rgba(255,71,87,0.2);
         }
         .error-msg { 
-            color: #ff6b6b; 
+            color: #ff4757; 
             font-size: 14px; 
-            margin-top: 5px; 
+            margin-top: 6px; 
             display: none; 
+            font-weight: 500;
         }
         .checkbox { 
             display: flex; 
             align-items: center; 
-            margin-bottom: 1.5rem; 
-            color: white;
+            margin-bottom: 1.8rem; 
+            color: rgba(255,255,255,0.95);
         }
         .checkbox input { 
             width: auto; 
-            margin-right: 10px; 
-            accent-color: #4dabf7;
+            margin-right: 12px; 
+            accent-color: #ffd700;
+            transform: scale(1.2);
         }
         button { 
             width: 100%; 
-            padding: 12px; 
-            background: linear-gradient(135deg, #4dabf7, #007BFF); 
-            color: white; 
+            padding: 15px; 
+            background: linear-gradient(135deg, #ffd700, #ffed4a); 
+            color: #333; 
             border: none; 
-            border-radius: 8px; 
-            font-size: 16px; 
+            border-radius: 12px; 
+            font-size: 17px; 
             font-weight: bold; 
             cursor: pointer; 
             transition: all 0.3s; 
+            box-shadow: 0 6px 20px rgba(255,215,0,0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         button:hover:not(:disabled) { 
-            background: linear-gradient(135deg, #007BFF, #0056b3); 
-            transform: translateY(-2px);
+            background: linear-gradient(135deg, #ffed4a, #ffd700); 
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255,215,0,0.5);
         }
         button:disabled { 
             background: rgba(255,255,255,0.2); 
             cursor: not-allowed; 
+            transform: none;
+            box-shadow: none;
         }
         .link { 
             text-align: center; 
-            margin-top: 1rem; 
+            margin-top: 1.5rem; 
         }
         .link a { 
-            color: #4dabf7; 
+            color: #ffd700; 
             text-decoration: none; 
             font-weight: bold;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
-        .link a:hover {
-            color: white;
-        }
+        .link a:hover { color: white; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <form id="loginForm">
-            <!-- Abas -->
-            <div class="tabs">
-                <button type="button" class="tab-btn active" data-tab="novo">Novo Usuário</button>
-                <button type="button" class="tab-btn" data-tab="login">Login Rápido</button>
-            </div>
-
-            <!-- Aba Novo Usuário (com confirmação) -->
-            <div class="tab-content active" id="novo">
-                <h1>Novo Usuário</h1>
-                
-                <div class="input-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" required>
-                    <div class="error-msg" id="emailError">Email inválido ou em branco</div>
-                </div>
-                
-                <div class="input-group">
-                    <label for="confirmEmail">Confirme Email</label>
-                    <input type="email" id="confirmEmail" required>
-                    <div class="error-msg" id="confirmEmailError">Emails não conferem</div>
-                </div>
-                
-                <div class="input-group">
-                    <label for="senha">Senha</label>
-                    <input type="password" id="senha" required minlength="6">
-                    <div class="error-msg" id="senhaError">Senha deve ter pelo menos 6 caracteres</div>
-                </div>
-            </div>
-
-            <!-- Aba Login Rápido (sem confirmação) -->
-            <div class="tab-content" id="login">
-                <h1>Login Rápido</h1>
-                
-                <div class="input-group">
-                    <label for="emailLogin">Email</label>
-                    <input type="email" id="emailLogin" required>
-                    <div class="error-msg" id="emailLoginError">Email inválido</div>
-                </div>
-                
-                <div class="input-group">
-                    <label for="senhaLogin">Senha</label>
-                    <input type="password" id="senhaLogin" required minlength="6">
-                    <div class="error-msg" id="senhaLoginError">Senha deve ter pelo menos 6 caracteres</div>
-                </div>
-            </div>
-            
-            <label class="checkbox">
-                <input type="checkbox" id="lembrar"> Lembrar-me
-            </label>
-            
-            <button type="submit" id="btnEntrar" disabled>Entrar</button>
-            
-            <div class="link">
-                <a href="#">Esqueceu a senha?</a>
-            </div>
-        </form>
-    </div>
-
-    <script>
-        // Controle das abas
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-        
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tab = btn.dataset.tab;
-                
-                // Remove active das abas
-                tabBtns.forEach(b => b.classList.remove('active'));
-                tabContents.forEach(c => c.classList.remove('active'));
-                
-                // Ativa aba clicada
-                btn.classList.add('active');
-                document.getElementById(tab).classList.add('active');
-                
-                // Revalida formulário
-                validateForm();
-            });
-        });
-
-        // Elementos dinâmicos por aba
-        let currentElements = {
-            email: document.getElementById('email'),
-            confirmEmail: document.getElementById('confirmEmail'),
-            senha: document.getElementById('senha'),
-            emailLogin: document.getElementById('emailLogin'),
-            senhaLogin: document.getElementById('senhaLogin')
-        };
-
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
-
-        function validateForm() {
-            const activeTab = document.querySelector('.tab-content.active').id;
-            const btnEntrar = document.getElementById('btnEntrar');
-
-            // Reset erros
-            document.querySelectorAll('.error-msg').forEach(el => {
-                el.style.display = 'none';
-                el.previousElementSibling.classList.remove('error');
-            });
-
-            let isValid = true;
-
-            if (activeTab === 'novo') {
-                // Validação aba Novo Usuário
-                const emailVal = currentElements.email.value.trim();
-                const confirmVal = currentElements.confirmEmail.value.trim();
-                const senhaVal = currentElements.senha.value;
-
-                if (!emailVal || !validateEmail(emailVal)) {
-                    document.getElementById('emailError').style.display = 'block';
-                    currentElements.email.classList.add('error');
-                    isValid = false;
-                }
-                if (confirmVal !== emailVal) {
-                    document.getElementById('confirmEmailError').style.display = 'block';
-                    currentElements.confirmEmail.classList.add('error');
-                    isValid = false;
-                }
-                if (senhaVal.length < 6) {
-                    document.getElementById('senhaError').style.display = 'block';
-                    currentElements.senha.classList.add('error');
-                    isValid = false;
-                }
-            } else {
-                // Validação aba Login Rápido
-                const emailVal = currentElements.emailLogin.value.trim();
-                const senhaVal = currentElements.senhaLogin.value;
-
-                if (!emailVal || !validateEmail(emailVal)) {
-                    document.getElementById('emailLoginError').style.display = 'block';
-                    currentElements.emailLogin.classList.add('error');
-                    isValid = false;
-                }
-                if (senhaVal.length < 6) {
-                    document.getElementById('senhaLoginError').style.display = 'block';
-                    currentElements.senhaLogin.classList.add('error');
-                    isValid = false;
-                }
-            }
-
-            btnEntrar.disabled = !isValid;
-            return isValid;
-        }
-
-        // Eventos em tempo real
-        [currentElements.email, currentElements.confirmEmail, currentElements.senha, 
-         currentElements.emailLogin, currentElements.senhaLogin].forEach(input => {
-            input.addEventListener('input', validateForm);
-        });
-
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (validateForm()) {
-                const activeTab = document.querySelector('.tab-content.active').id;
-                alert(`Login ${activeTab === 'novo' ? 'NOVO USUÁRIO' : 'RÁPIDO'} confirmado!`);
-            }
-        });
-    </script>
-</body>
-</html>
+    <!-- Desenhos de barbearia animados -->
+    <div class="barber-bg">
+        <div class="scissors" style="top: 15%; left: 10%;">✂️</div>
+        <div class="razor" sty
