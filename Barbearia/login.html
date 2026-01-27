@@ -16,45 +16,84 @@
             justify-content: center; 
         }
         .container { 
-            background: white; 
+            background: rgba(255, 255, 255, 0.1); /* Azul claro transparente */
+            backdrop-filter: blur(10px);
             padding: 2rem; 
             border-radius: 15px; 
             box-shadow: 0 15px 35px rgba(0,123,255,0.4); 
             width: 90%; 
-            max-width: 350px; 
+            max-width: 400px; 
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.8);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
         }
         h1 { 
             text-align: center; 
-            color: #004085; 
-            margin-bottom: 1.5rem; 
+            color: white; 
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         .input-group { 
             margin-bottom: 1rem; 
         }
         label { 
             display: block; 
-            color: #495057; 
+            color: white; 
             margin-bottom: 0.5rem; 
-            font-weight: bold; 
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
         input { 
             width: 100%; 
             padding: 12px; 
-            border: 2px solid #dee2e6; 
+            border: 2px solid rgba(255,255,255,0.3); 
             border-radius: 8px; 
             font-size: 16px; 
-            transition: border-color 0.3s; 
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            backdrop-filter: blur(5px);
+        }
+        input::placeholder {
+            color: rgba(255,255,255,0.7);
         }
         input:focus { 
             outline: none; 
-            border-color: #007BFF; 
-            box-shadow: 0 0 0 3px rgba(0,123,255,0.2); 
+            border-color: #4dabf7; 
+            box-shadow: 0 0 0 3px rgba(77,171,247,0.3); 
+            background: rgba(255,255,255,0.2);
         }
         input.error { 
-            border-color: #dc3545; 
+            border-color: #ff6b6b; 
+            background: rgba(255,107,107,0.1);
         }
         .error-msg { 
-            color: #dc3545; 
+            color: #ff6b6b; 
             font-size: 14px; 
             margin-top: 5px; 
             display: none; 
@@ -63,28 +102,31 @@
             display: flex; 
             align-items: center; 
             margin-bottom: 1.5rem; 
+            color: white;
         }
         .checkbox input { 
             width: auto; 
             margin-right: 10px; 
+            accent-color: #4dabf7;
         }
         button { 
             width: 100%; 
             padding: 12px; 
-            background: #0078f8; 
+            background: linear-gradient(135deg, #4dabf7, #007BFF); 
             color: white; 
             border: none; 
             border-radius: 8px; 
             font-size: 16px; 
             font-weight: bold; 
             cursor: pointer; 
-            transition: background 0.3s; 
+            transition: all 0.3s; 
         }
-        button:hover { 
-            background: #0056b3; 
+        button:hover:not(:disabled) { 
+            background: linear-gradient(135deg, #007BFF, #0056b3); 
+            transform: translateY(-2px);
         }
         button:disabled { 
-            background: #6c757d; 
+            background: rgba(255,255,255,0.2); 
             cursor: not-allowed; 
         }
         .link { 
@@ -92,32 +134,62 @@
             margin-top: 1rem; 
         }
         .link a { 
-            color: #007BFF; 
+            color: #4dabf7; 
             text-decoration: none; 
+            font-weight: bold;
+        }
+        .link a:hover {
+            color: white;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <form id="loginForm">
-            <h1>Login Seguro</h1>
-            
-            <div class="input-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" required>
-                <div class="error-msg" id="emailError">Email inválido ou em branco</div>
+            <!-- Abas -->
+            <div class="tabs">
+                <button type="button" class="tab-btn active" data-tab="novo">Novo Usuário</button>
+                <button type="button" class="tab-btn" data-tab="login">Login Rápido</button>
             </div>
-            
-            <div class="input-group">
-                <label for="confirmEmail">Confirme Email</label>
-                <input type="email" id="confirmEmail" required>
-                <div class="error-msg" id="confirmEmailError">Emails não conferem</div>
+
+            <!-- Aba Novo Usuário (com confirmação) -->
+            <div class="tab-content active" id="novo">
+                <h1>Novo Usuário</h1>
+                
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                    <div class="error-msg" id="emailError">Email inválido ou em branco</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="confirmEmail">Confirme Email</label>
+                    <input type="email" id="confirmEmail" required>
+                    <div class="error-msg" id="confirmEmailError">Emails não conferem</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" required minlength="6">
+                    <div class="error-msg" id="senhaError">Senha deve ter pelo menos 6 caracteres</div>
+                </div>
             </div>
-            
-            <div class="input-group">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" required minlength="6">
-                <div class="error-msg" id="senhaError">Senha deve ter pelo menos 6 caracteres</div>
+
+            <!-- Aba Login Rápido (sem confirmação) -->
+            <div class="tab-content" id="login">
+                <h1>Login Rápido</h1>
+                
+                <div class="input-group">
+                    <label for="emailLogin">Email</label>
+                    <input type="email" id="emailLogin" required>
+                    <div class="error-msg" id="emailLoginError">Email inválido</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="senhaLogin">Senha</label>
+                    <input type="password" id="senhaLogin" required minlength="6">
+                    <div class="error-msg" id="senhaLoginError">Senha deve ter pelo menos 6 caracteres</div>
+                </div>
             </div>
             
             <label class="checkbox">
@@ -133,22 +205,44 @@
     </div>
 
     <script>
-        const form = document.getElementById('loginForm');
-        const email = document.getElementById('email');
-        const confirmEmail = document.getElementById('confirmEmail');
-        const senha = document.getElementById('senha');
-        const btnEntrar = document.getElementById('btnEntrar');
+        // Controle das abas
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                
+                // Remove active das abas
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                // Ativa aba clicada
+                btn.classList.add('active');
+                document.getElementById(tab).classList.add('active');
+                
+                // Revalida formulário
+                validateForm();
+            });
+        });
 
-        // Regex simples para email [web:16]
+        // Elementos dinâmicos por aba
+        let currentElements = {
+            email: document.getElementById('email'),
+            confirmEmail: document.getElementById('confirmEmail'),
+            senha: document.getElementById('senha'),
+            emailLogin: document.getElementById('emailLogin'),
+            senhaLogin: document.getElementById('senhaLogin')
+        };
+
         function validateEmail(email) {
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return re.test(email);
         }
 
         function validateForm() {
-            const emailVal = email.value.trim();
-            const confirmVal = confirmEmail.value.trim();
-            const senhaVal = senha.value;
+            const activeTab = document.querySelector('.tab-content.active').id;
+            const btnEntrar = document.getElementById('btnEntrar');
 
             // Reset erros
             document.querySelectorAll('.error-msg').forEach(el => {
@@ -158,25 +252,42 @@
 
             let isValid = true;
 
-            // Valida email
-            if (!emailVal || !validateEmail(emailVal)) {
-                document.getElementById('emailError').style.display = 'block';
-                email.classList.add('error');
-                isValid = false;
-            }
+            if (activeTab === 'novo') {
+                // Validação aba Novo Usuário
+                const emailVal = currentElements.email.value.trim();
+                const confirmVal = currentElements.confirmEmail.value.trim();
+                const senhaVal = currentElements.senha.value;
 
-            // Confirma email
-            if (confirmVal !== emailVal) {
-                document.getElementById('confirmEmailError').style.display = 'block';
-                confirmEmail.classList.add('error');
-                isValid = false;
-            }
+                if (!emailVal || !validateEmail(emailVal)) {
+                    document.getElementById('emailError').style.display = 'block';
+                    currentElements.email.classList.add('error');
+                    isValid = false;
+                }
+                if (confirmVal !== emailVal) {
+                    document.getElementById('confirmEmailError').style.display = 'block';
+                    currentElements.confirmEmail.classList.add('error');
+                    isValid = false;
+                }
+                if (senhaVal.length < 6) {
+                    document.getElementById('senhaError').style.display = 'block';
+                    currentElements.senha.classList.add('error');
+                    isValid = false;
+                }
+            } else {
+                // Validação aba Login Rápido
+                const emailVal = currentElements.emailLogin.value.trim();
+                const senhaVal = currentElements.senhaLogin.value;
 
-            // Valida senha
-            if (senhaVal.length < 6) {
-                document.getElementById('senhaError').style.display = 'block';
-                senha.classList.add('error');
-                isValid = false;
+                if (!emailVal || !validateEmail(emailVal)) {
+                    document.getElementById('emailLoginError').style.display = 'block';
+                    currentElements.emailLogin.classList.add('error');
+                    isValid = false;
+                }
+                if (senhaVal.length < 6) {
+                    document.getElementById('senhaLoginError').style.display = 'block';
+                    currentElements.senhaLogin.classList.add('error');
+                    isValid = false;
+                }
             }
 
             btnEntrar.disabled = !isValid;
@@ -184,14 +295,16 @@
         }
 
         // Eventos em tempo real
-        email.addEventListener('input', validateForm);
-        confirmEmail.addEventListener('input', validateForm);
-        senha.addEventListener('input', validateForm);
+        [currentElements.email, currentElements.confirmEmail, currentElements.senha, 
+         currentElements.emailLogin, currentElements.senhaLogin].forEach(input => {
+            input.addEventListener('input', validateForm);
+        });
 
-        form.addEventListener('submit', (e) => {
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
             if (validateForm()) {
-                alert('Login confirmado! Emails batem e senha válida.');
+                const activeTab = document.querySelector('.tab-content.active').id;
+                alert(`Login ${activeTab === 'novo' ? 'NOVO USUÁRIO' : 'RÁPIDO'} confirmado!`);
             }
         });
     </script>
