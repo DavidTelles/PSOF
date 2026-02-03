@@ -1,4 +1,3 @@
-/* Reset básico */
 * {
   margin: 0;
   padding: 0;
@@ -6,7 +5,6 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Fundo geral */
 body {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea, #764ba2);
@@ -15,29 +13,26 @@ body {
   justify-content: center;
 }
 
-/* Container central */
 .container {
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   padding: 20px;
 }
 
-/* Card */
 .card {
   background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(15px);
-  border-radius: 20px;
+  backdrop-filter: blur(16px);
+  border-radius: 22px;
   padding: 35px 30px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
   color: #fff;
   animation: fadeUp 0.8s ease;
 }
 
-/* Animação suave */
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(35px);
   }
   to {
     opacity: 1;
@@ -45,23 +40,19 @@ body {
   }
 }
 
-/* Título */
 .card h1 {
   text-align: center;
   font-size: 2.2rem;
-  margin-bottom: 10px;
-  font-weight: 700;
+  margin-bottom: 8px;
 }
 
-/* Subtítulo */
 .subtitle {
   text-align: center;
   font-size: 0.95rem;
   opacity: 0.85;
-  margin-bottom: 30px;
+  margin-bottom: 28px;
 }
 
-/* Labels */
 .card label {
   display: block;
   margin-bottom: 6px;
@@ -69,8 +60,8 @@ body {
   font-weight: 500;
 }
 
-/* Inputs */
-.card input {
+.card input[type="email"],
+.card input[type="password"] {
   width: 100%;
   padding: 14px;
   border-radius: 12px;
@@ -78,44 +69,86 @@ body {
   outline: none;
   margin-bottom: 18px;
   font-size: 0.95rem;
-  background: rgba(255, 255, 255, 0.9);
-  transition: all 0.3s ease;
-}
-
-.card input::placeholder {
-  color: #999;
+  background: rgba(255, 255, 255, 0.95);
+  transition: 0.3s ease;
 }
 
 .card input:focus {
   transform: scale(1.02);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.35);
+  box-shadow: 0 0 0 3px rgba(255, 118, 150, 0.45);
 }
 
-/* Botão */
+/* ===== RADIO BUTTONS GOTOSOS ===== */
+
+.radio-title {
+  margin: 10px 0 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.radio-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 22px;
+}
+
+.radio-option {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+  position: relative;
+}
+
+.radio-option input {
+  display: none;
+}
+
+.radio-option span {
+  font-weight: 600;
+}
+
+.radio-option:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.radio-option input:checked + span {
+  color: #fff;
+}
+
+.radio-option input:checked ~ span::after {
+  content: "✓";
+  margin-left: 6px;
+}
+
+.radio-option:has(input:checked) {
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+  box-shadow: 0 10px 25px rgba(255, 118, 150, 0.6);
+}
+
+/* ===== BOTÃO ===== */
+
 .card button {
   width: 100%;
-  padding: 14px;
+  padding: 15px;
   border: none;
-  border-radius: 14px;
+  border-radius: 16px;
   background: linear-gradient(135deg, #ff758c, #ff7eb3);
   color: #fff;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 5px;
+  transition: 0.3s ease;
 }
 
 .card button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 15px 30px rgba(255, 118, 150, 0.5);
+  box-shadow: 0 18px 35px rgba(255, 118, 150, 0.55);
 }
 
-.card button:active {
-  transform: translateY(0);
-}
-
-/* Link de login */
 .login-link {
   text-align: center;
   margin-top: 22px;
@@ -126,21 +159,9 @@ body {
   color: #ffd1e8;
   text-decoration: none;
   font-weight: bold;
-  transition: color 0.3s ease;
 }
 
 .login-link a:hover {
   color: #fff;
   text-decoration: underline;
-}
-
-/* Responsivo */
-@media (max-width: 480px) {
-  .card {
-    padding: 28px 22px;
-  }
-
-  .card h1 {
-    font-size: 1.8rem;
-  }
 }

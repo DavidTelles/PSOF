@@ -17,8 +17,22 @@
       <label for="password">Senha</label>
       <input type="password" id="password" name="password" placeholder="Digite sua senha" required />
 
-      <label for="password">Confirme sua Senha</label>
-      <input type="password" id="password" name="password" placeholder="Digite sua senha" required />
+      <label for="confirm-password">Confirme sua Senha</label>
+      <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirme sua senha" required />
+
+      <p class="radio-title">Você é barbeiro ou cliente?</p>
+
+      <div class="radio-group">
+        <label class="radio-option">
+          <input type="radio" name="perfil" value="barbeiro" />
+          <span>Barbeiro</span>
+        </label>
+
+        <label class="radio-option">
+          <input type="radio" name="perfil" value="cliente" />
+          <span>Cliente</span>
+        </label>
+      </div>
 
       <button type="submit">Cadastrar</button>
 
