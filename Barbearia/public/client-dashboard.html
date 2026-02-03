@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Cliente - BarberHub</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">
+                <svg class="navbar-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 3v18M18 3v18M6 12h12" />
+                </svg>
+                <span class="navbar-title">BarberHub</span>
+            </a>
+            <div class="navbar-actions">
+                <span class="navbar-user" id="userName"></span>
+                <button data-testid="dashboard-logout-btn" onclick="logout()" class="btn btn-ghost btn-small">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 3rem; padding-bottom: 3rem;">
+        <h1 data-testid="client-dashboard-title" style="font-size: 2.5rem; font-family: 'Oswald', sans-serif; font-weight: 700; color: #F8FAFC; margin-bottom: 3rem;">
+            Bem-vindo, <span class="text-gold" id="userNameTitle"></span>
+        </h1>
+
+        <!-- Stats -->
+        <div id="statsSection" class="grid grid-3 mb-4">
+            <div class="stat-card">
+                <div class="stat-label">Total de Agendamentos</div>
+                <div class="stat-value" id="totalBookings">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Agendamentos Concluídos</div>
+                <div class="stat-value" id="completedBookings">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Próximos Agendamentos</div>
+                <div class="stat-value" id="upcomingBookings">0</div>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="mb-4">
+            <h2 style="font-size: 2rem; font-family: 'Oswald', sans-serif; font-weight: 700; color: #F8FAFC; margin-bottom: 1.5rem;">
+                Encontre uma Barbearia
+            </h2>
+            <input
+                data-testid="client-search-input"
+                type="text"
+                id="searchInput"
+                placeholder="Buscar por nome ou cidade..."
+                class="form-input"
+                oninput="filterBarbershops()"
+            />
+        </div>
+
+        <!-- Barbershops Grid -->
+        <div id="barbershopsSection" class="mb-4">
+            <div id="barbershopsGrid" class="grid grid-3"></div>
+        </div>
+
+        <!-- My Bookings -->
+        <div>
+            <h2 style="font-size: 2rem; font-family: 'Oswald', sans-serif; font-weight: 700; color: #F8FAFC; margin-bottom: 1.5rem;">
+                Meus Agendamentos
+            </h2>
+            <div id="bookingsSection">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Barbearia</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+        let allBarbershops = [];
+        let allBookings = [];
+
+        async function loadData() {
+            const user = getUser();
+            if (!user || user.user_type !== 'client') {
+                window.location.href = '/';
+                return;
+            }
+
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userNameTitle').textContent = user.name;
+
+            try {
+                const [barbershops, bookings] = await Promise.all([
+                    apiCall('/barbershops'),
+                    apiCall('/bookings/my')
+                ]);
+
+                allBarbershops = barbershops;
+                allBookings = bookings;
+
+                updateStats(bookings);
+                renderBarbershops(barbershops);
+                renderBookings(bookings);
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        function updateStats(bookings) {
+            const completed = bookings.filter(b => b.status === 'completed').length;
+            const upcoming = bookings.filter(b => ['pending', 'confirmed'].includes(b.status)).length;
+
+            document.getElementById('totalBookings').textContent = bookings.length;
+            document.getElementById('completedBookings').textContent = completed;
+            document.getElementById('upcomingBookings').textContent = upcoming;
+        }
+
+        function renderBarbershops(barbershops) {
+            const grid = document.getElementById('barbershopsGrid');
+            
+            if (barbershops.length === 0) {
+                grid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;"><p>Nenhuma barbearia encontrada.</p></div>';
+                return;
+            }
+
+            grid.innerHTML = barbershops.map(b => `
+                <div class="card" data-testid="barbershop-card-${b.id}">
+                    <img
+                        src="${b.image_url || 'https://images.unsplash.com/photo-1768938896401-fe52fd18d3af?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBiYXJiZXJzaG9wJTIwaW50ZXJpb3IlMjBkYXJrJTIwbW9vZHl8ZW58MHx8fHwxNzcwMTI0ODIzfDA&ixlib=rb-4.1.0&q=85'}"
+                        alt="${b.name}"
+                        style="width: 100%; height: 200px; object-fit: cover; border-radius: 0.5rem; margin-bottom: 1rem;"
+                    />
+                    <h3 style="font-size: 1.5rem; font-family: 'Oswald', sans-serif; font-weight: 700; color: #F8FAFC; margin-bottom: 0.5rem;">
+                        ${b.name}
+                    </h3>
+                    <p style="color: #94A3B8; margin-bottom: 0.5rem; font-size: 0.875rem;">${b.city}</p>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                        <svg style="color: #D4AF37;" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        <span style="color: #D4AF37; font-weight: 600;">${b.rating.toFixed(1)}</span>
+                        <span style="color: #64748B; font-size: 0.875rem;">(${b.total_reviews} avaliações)</span>
+                    </div>
+                    <a href="/barbershop-detail.html?id=${b.id}">
+                        <button data-testid="view-barbershop-btn-${b.id}" class="btn btn-primary" style="width: 100%;">
+                            Ver Detalhes
+                        </button>
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function renderBookings(bookings) {
+            const tbody = document.getElementById('bookingsTable');
+            
+            if (bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 2rem; color: #64748B;">Você ainda não tem agendamentos.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = bookings.map(b => `
+                <tr data-testid="booking-row-${b.id}">
+                    <td>${new Date(b.booking_date).toLocaleString('pt-BR')}</td>
+                    <td>${b.barbershop_id}</td>
+                    <td>${getStatusBadge(b.status)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                pending: '<span class="badge badge-pending">Pendente</span>',
+                confirmed: '<span class="badge badge-confirmed">Confirmado</span>',
+                completed: '<span class="badge badge-completed">Concluído</span>',
+                cancelled: '<span class="badge badge-cancelled">Cancelado</span>'
+            };
+            return badges[status] || status;
+        }
+
+        function filterBarbershops() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allBarbershops.filter(b => 
+                b.name.toLowerCase().includes(query) ||
+                b.city.toLowerCase().includes(query)
+            );
+            renderBarbershops(filtered);
+        }
+
+        loadData();
+    </script>
+</body>
+</html>

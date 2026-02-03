@@ -1,0 +1,393 @@
+"<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Barbearia - BarberHub</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">
+                <svg class="navbar-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 3v18M18 3v18M6 12h12" />
+                </svg>
+                <span class="navbar-title">BarberHub</span>
+            </a>
+            <div class="navbar-actions">
+                <span class="navbar-user" id="userName"></span>
+                <button data-testid="barbershop-logout-btn" onclick="logout()" class="btn btn-ghost btn-small">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 3rem; padding-bottom: 3rem;">
+        <div id="loadingSection" class="loading">Carregando...</div>
+        
+        <div id="mainContent" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+                <h1 data-testid="barbershop-dashboard-title" style="font-size: 2.5rem; font-family: 'Oswald', sans-serif; font-weight: 700; color: #F8FAFC; margin: 0;">
+                    Dashboard da Barbearia
+                </h1>
+                <button data-testid="edit-barbershop-btn" onclick="showBarbershopModal()" class="btn btn-secondary" id="editBtn" style="display: none;">
+                    Editar Barbearia
+                </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-4 mb-4">
+                <div class="stat-card">
+                    <div class="stat-label">Total de Agendamentos</div>
+                    <div class="stat-value" id="totalBookings">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pendentes</div>
+                    <div class="stat-value" id="pendingBookings">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Concluídos</div>
+                    <div class="stat-value" id="completedBookings">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total de Serviços</div>
+                    <div class="stat-value" id="totalServices">0</div>
+                </div>
+            </div>
+
+            <!-- Services -->
+            <div class="mb-4" id="servicesContainer" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="font-size: 2rem; font-family: 'Oswald', sans-serif; font-weight: 700; color: #F8FAFC; margin: 0;">
+                        Serviços
+                    </h2>
+                    <button data-testid="add-service-btn" onclick="showServiceModal()" class="btn btn-primary">
+                        Adicionar Serviço
+                    </button>
+                </div>
+                <div id="servicesGrid" class="grid grid-3"></div>
+            </div>
+
+            <!-- Bookings -->
+            <div>
+                <h2 style="font-size: 2rem; font-family: 'Oswald', sans-serif; font-weight: 700; color: #F8FAFC; margin-bottom: 1.5rem;">
+                    Agendamentos
+                </h2>
+                <div id="bookingsSection">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Cliente</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barbershop Modal -->
+    <div id="barbershopModal" class="modal-overlay">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title" id="barbershopModalTitle">Criar Barbearia</h2>
+                <button class="modal-close" onclick="hideBarbershopModal()">&times;</button>
+            </div>
+            <form id="barbershopForm" onsubmit="handleBarbershopSubmit(event)">
+                <div class="form-group">
+                    <label class="form-label">Nome da Barbearia</label>
+                    <input data-testid="barbershop-name-input" type="text" id="barbershopName" class="form-input" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <textarea data-testid="barbershop-description-input" id="barbershopDescription" class="form-textarea" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Endereço</label>
+                    <input data-testid="barbershop-address-input" type="text" id="barbershopAddress" class="form-input" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cidade</label>
+                    <input data-testid="barbershop-city-input" type="text" id="barbershopCity" class="form-input" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Telefone</label>
+                    <input data-testid="barbershop-phone-input" type="tel" id="barbershopPhone" class="form-input" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Horário de Funcionamento</label>
+                    <input data-testid="barbershop-hours-input" type="text" id="barbershopHours" class="form-input" placeholder="Ex: Seg-Sex 9h-18h, Sáb 9h-14h" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">URL da Imagem (Opcional)</label>
+                    <input data-testid="barbershop-image-input" type="url" id="barbershopImage" class="form-input" />
+                </div>
+                <button data-testid="save-barbershop-btn" type="submit" class="btn btn-primary" style="width: 100%;">Salvar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Service Modal -->
+    <div id="serviceModal" class="modal-overlay">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">Adicionar Serviço</h2>
+                <button class="modal-close" onclick="hideServiceModal()">&times;</button>
+            </div>
+            <form id="serviceForm" onsubmit="handleServiceSubmit(event)">
+                <div class="form-group">
+                    <label class="form-label">Nome do Serviço</label>
+                    <input data-testid="service-name-input" type="text" id="serviceName" class="form-input" placeholder="Ex: Corte Masculino" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <textarea data-testid="service-description-input" id="serviceDescription" class="form-textarea" placeholder="Descreva o serviço..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Preço (R$)</label>
+                    <input data-testid="service-price-input" type="number" step="0.01" id="servicePrice" class="form-input" placeholder="50.00" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Duração (minutos)</label>
+                    <input data-testid="service-duration-input" type="number" id="serviceDuration" class="form-input" placeholder="30" required />
+                </div>
+                <button data-testid="save-service-btn" type="submit" class="btn btn-primary" style="width: 100%;">Adicionar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+        let barbershop = null;
+        let services = [];
+        let bookings = [];
+
+        async function loadData() {
+            const user = getUser();
+            if (!user || user.user_type !== 'barbershop') {
+                window.location.href = '/';
+                return;
+            }
+
+            document.getElementById('userName').textContent = user.name;
+
+            try {
+                const [stats, bookingsData] = await Promise.all([
+                    apiCall('/stats/dashboard'),
+                    apiCall('/bookings/my')
+                ]);
+
+                bookings = bookingsData;
+                updateStats(stats);
+                renderBookings(bookingsData);
+
+                try {
+                    barbershop = await apiCall('/barbershops/owner/my');
+                    document.getElementById('editBtn').style.display = 'block';
+                    document.getElementById('servicesContainer').style.display = 'block';
+                    
+                    const servicesData = await apiCall(`/services/barbershop/${barbershop.id}`);
+                    services = servicesData;
+                    renderServices(servicesData);
+                } catch (err) {
+                    if (err.message.includes('404') || err.message.includes('not found')) {
+                        showBarbershopModal();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('Erro ao carregar dados');
+            } finally {
+                document.getElementById('loadingSection').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+            }
+        }
+
+        function updateStats(stats) {
+            document.getElementById('totalBookings').textContent = stats.total_bookings || 0;
+            document.getElementById('pendingBookings').textContent = stats.pending_bookings || 0;
+            document.getElementById('completedBookings').textContent = stats.completed_bookings || 0;
+            document.getElementById('totalServices').textContent = stats.total_services || 0;
+        }
+
+        function renderServices(services) {
+            const grid = document.getElementById('servicesGrid');
+            
+            if (services.length === 0) {
+                grid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;"><p>Nenhum serviço cadastrado ainda.</p></div>';
+                return;
+            }
+
+            grid.innerHTML = services.map(s => `
+                <div class="card" data-testid="service-card-${s.id}">
+                    <h3 style="font-size: 1.25rem; font-family: 'Oswald', sans-serif; font-weight: 700; color: #F8FAFC; margin-bottom: 0.5rem;">
+                        ${s.name}
+                    </h3>
+                    <p style="color: #94A3B8; margin-bottom: 1rem; font-size: 0.875rem;">${s.description}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <span style="color: #D4AF37; font-weight: 700; font-size: 1.25rem;">R$ ${s.price.toFixed(2)}</span>
+                        <span style="color: #64748B; font-size: 0.875rem;">${s.duration} min</span>
+                    </div>
+                    <button data-testid="delete-service-btn-${s.id}" onclick="deleteService('${s.id}')" class="btn btn-accent btn-small" style="width: 100%;">
+                        Excluir
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function renderBookings(bookings) {
+            const tbody = document.getElementById('bookingsTable');
+            
+            if (bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem; color: #64748B;">Nenhum agendamento ainda.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = bookings.map(b => `
+                <tr data-testid="booking-row-${b.id}">
+                    <td>${new Date(b.booking_date).toLocaleString('pt-BR')}</td>
+                    <td>${b.client_id}</td>
+                    <td>${getStatusBadge(b.status)}</td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem;">
+                            ${b.status === 'pending' ? `<button data-testid="confirm-booking-btn-${b.id}" onclick="updateBookingStatus('${b.id}', 'confirmed')" class="btn btn-primary btn-small">Confirmar</button>` : ''}
+                            ${b.status === 'confirmed' ? `<button data-testid="complete-booking-btn-${b.id}" onclick="updateBookingStatus('${b.id}', 'completed')" class="btn btn-primary btn-small">Concluir</button>` : ''}
+                            ${['pending', 'confirmed'].includes(b.status) ? `<button data-testid="cancel-booking-btn-${b.id}" onclick="updateBookingStatus('${b.id}', 'cancelled')" class="btn btn-accent btn-small">Cancelar</button>` : ''}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                pending: '<span class="badge badge-pending">Pendente</span>',
+                confirmed: '<span class="badge badge-confirmed">Confirmado</span>',
+                completed: '<span class="badge badge-completed">Concluído</span>',
+                cancelled: '<span class="badge badge-cancelled">Cancelado</span>'
+            };
+            return badges[status] || status;
+        }
+
+        function showBarbershopModal() {
+            if (barbershop) {
+                document.getElementById('barbershopModalTitle').textContent = 'Editar Barbearia';
+                document.getElementById('barbershopName').value = barbershop.name;
+                document.getElementById('barbershopDescription').value = barbershop.description;
+                document.getElementById('barbershopAddress').value = barbershop.address;
+                document.getElementById('barbershopCity').value = barbershop.city;
+                document.getElementById('barbershopPhone').value = barbershop.phone;
+                document.getElementById('barbershopHours').value = barbershop.opening_hours;
+                document.getElementById('barbershopImage').value = barbershop.image_url || '';
+            }
+            document.getElementById('barbershopModal').classList.add('active');
+        }
+
+        function hideBarbershopModal() {
+            document.getElementById('barbershopModal').classList.remove('active');
+        }
+
+        function showServiceModal() {
+            document.getElementById('serviceForm').reset();
+            document.getElementById('serviceModal').classList.add('active');
+        }
+
+        function hideServiceModal() {
+            document.getElementById('serviceModal').classList.remove('active');
+        }
+
+        async function handleBarbershopSubmit(event) {
+            event.preventDefault();
+            
+            const payload = {
+                name: document.getElementById('barbershopName').value,
+                description: document.getElementById('barbershopDescription').value,
+                address: document.getElementById('barbershopAddress').value,
+                city: document.getElementById('barbershopCity').value,
+                phone: document.getElementById('barbershopPhone').value,
+                opening_hours: document.getElementById('barbershopHours').value,
+                image_url: document.getElementById('barbershopImage').value || null
+            };
+
+            try {
+                if (barbershop) {
+                    await apiCall(`/barbershops/${barbershop.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(payload)
+                    });
+                    alert('Barbearia atualizada com sucesso!');
+                } else {
+                    await apiCall('/barbershops', {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                    alert('Barbearia criada com sucesso!');
+                }
+                hideBarbershopModal();
+                location.reload();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        async function handleServiceSubmit(event) {
+            event.preventDefault();
+            
+            const payload = {
+                name: document.getElementById('serviceName').value,
+                description: document.getElementById('serviceDescription').value,
+                price: parseFloat(document.getElementById('servicePrice').value),
+                duration: parseInt(document.getElementById('serviceDuration').value)
+            };
+
+            try {
+                await apiCall('/services', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                alert('Serviço adicionado com sucesso!');
+                hideServiceModal();
+                location.reload();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        async function deleteService(serviceId) {
+            if (!confirm('Tem certeza que deseja excluir este serviço?')) return;
+            
+            try {
+                await apiCall(`/services/${serviceId}`, { method: 'DELETE' });
+                alert('Serviço excluído com sucesso!');
+                location.reload();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        async function updateBookingStatus(bookingId, newStatus) {
+            try {
+                await apiCall(`/bookings/${bookingId}/status?status=${newStatus}`, { method: 'PUT' });
+                alert('Status atualizado com sucesso!');
+                location.reload();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        document.getElementById('barbershopModal').onclick = hideBarbershopModal;
+        document.getElementById('serviceModal').onclick = hideServiceModal;
+
+        loadData();
+    </script>
+</body>
+</html>
+"

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberHub - Precision Cuts, Seamless Booking</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">
+                <svg class="navbar-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 3v18M18 3v18M6 12h12" />
+                </svg>
+                <span class="navbar-title">BarberHub</span>
+            </a>
+            <div class="navbar-actions" id="navbarActions">
+                <a href="/auth.html">
+                    <button data-testid="landing-nav-login-btn" class="btn btn-primary btn-small">Entrar</button>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <h1 data-testid="landing-hero-title" class="hero-title">
+                        PRECISION CUTS,<br>
+                        <span class="text-gold">SEAMLESS BOOKING</span>
+                    </h1>
+                    <p class="hero-description">
+                        Conecte-se com as melhores barbearias da sua cidade. Agende online, avalie serviços e tenha a experiência perfeita de cuidados masculinos.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="/auth.html">
+                            <button data-testid="landing-hero-client-btn" class="btn btn-primary btn-large">Sou Cliente</button>
+                        </a>
+                        <a href="/auth.html">
+                            <button data-testid="landing-hero-barbershop-btn" class="btn btn-secondary btn-large">Sou Barbearia</button>
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.pexels.com/photos/12464838/pexels-photo-12464838.jpeg" alt="Barbershop" class="img-rounded">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section bg-dark">
+        <div class="container">
+            <h2 data-testid="landing-features-title" class="section-title">Como Funciona</h2>
+            <div class="grid grid-3">
+                <div class="card" data-testid="landing-feature-search">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <h3 class="card-title">Encontre Barbearias</h3>
+                    <p class="text-muted">Busque as melhores barbearias próximas a você com avaliações reais de clientes.</p>
+                </div>
+                <div class="card" data-testid="landing-feature-book">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <h3 class="card-title">Agende Online</h3>
+                    <p class="text-muted">Escolha o serviço, data e horário ideal. Sem complicações, sem filas.</p>
+                </div>
+                <div class="card" data-testid="landing-feature-review">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <h3 class="card-title">Avalie o Serviço</h3>
+                    <p class="text-muted">Compartilhe sua experiência e ajude outros clientes a escolherem melhor.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section bg-secondary">
+        <div class="container">
+            <div class="cta-content">
+                <h2 data-testid="landing-cta-title" class="section-title">Pronto Para Começar?</h2>
+                <p class="cta-text">
+                    Junte-se a centenas de clientes satisfeitos e barbearias que já transformaram a forma de agendar cortes.
+                </p>
+                <a href="/auth.html">
+                    <button data-testid="landing-cta-btn" class="btn btn-primary btn-extra-large">Criar Conta Grátis</button>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 BarberHub. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar - BarberHub</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="section" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+        <div class="card" style="max-width: 500px; width: 100%;">
+            <h1 data-testid="auth-title" class="section-title" style="margin-bottom: 2rem; font-size: 2rem;" id="authTitle">Entrar</h1>
+
+            <div id="alertBox" class="alert alert-error hidden"></div>
+
+            <!-- User Type Selection (only for register) -->
+            <div id="userTypeSection" class="form-group hidden">
+                <label class="form-label">Tipo de Conta</label>
+                <div class="flex gap-2">
+                    <button data-testid="auth-type-client-btn" type="button" onclick="selectUserType('client')" id="clientTypeBtn" class="btn btn-secondary" style="flex: 1;">Cliente</button>
+                    <button data-testid="auth-type-barbershop-btn" type="button" onclick="selectUserType('barbershop')" id="barbershopTypeBtn" class="btn btn-secondary" style="flex: 1;">Barbearia</button>
+                </div>
+            </div>
+
+            <form id="authForm" onsubmit="handleSubmit(event)">
+                <!-- Name (only for register) -->
+                <div id="nameGroup" class="form-group hidden">
+                    <label for="name" class="form-label" id="nameLabel">Nome Completo</label>
+                    <input
+                        id="name"
+                        data-testid="auth-name-input"
+                        type="text"
+                        name="name"
+                        class="form-input"
+                        placeholder="Seu nome"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input
+                        id="email"
+                        data-testid="auth-email-input"
+                        type="email"
+                        name="email"
+                        class="form-input"
+                        placeholder="seu@email.com"
+                        required
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Senha</label>
+                    <input
+                        id="password"
+                        data-testid="auth-password-input"
+                        type="password"
+                        name="password"
+                        class="form-input"
+                        placeholder="********"
+                        required
+                    />
+                </div>
+
+                <!-- Phone (only for register) -->
+                <div id="phoneGroup" class="form-group hidden">
+                    <label for="phone" class="form-label">Telefone (Opcional)</label>
+                    <input
+                        id="phone"
+                        data-testid="auth-phone-input"
+                        type="tel"
+                        name="phone"
+                        class="form-input"
+                        placeholder="(11) 99999-9999"
+                    />
+                </div>
+
+                <button
+                    data-testid="auth-submit-btn"
+                    type="submit"
+                    class="btn btn-primary"
+                    style="width: 100%;"
+                    id="submitBtn"
+                >
+                    Entrar
+                </button>
+            </form>
+
+            <div style="margin-top: 1.5rem; text-align: center;">
+                <button
+                    data-testid="auth-toggle-btn"
+                    onclick="toggleAuthMode()"
+                    class="btn btn-ghost"
+                    id="toggleBtn"
+                >
+                    Não tem uma conta? Criar conta
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+        let isLogin = true;
+        let userType = 'client';
+
+        function toggleAuthMode() {
+            isLogin = !isLogin;
+            document.getElementById('authTitle').textContent = isLogin ? 'Entrar' : 'Criar Conta';
+            document.getElementById('submitBtn').textContent = isLogin ? 'Entrar' : 'Criar Conta';
+            document.getElementById('toggleBtn').textContent = isLogin ? 'Não tem uma conta? Criar conta' : 'Já tem uma conta? Entrar';
+            
+            // Show/hide additional fields
+            document.getElementById('userTypeSection').classList.toggle('hidden', isLogin);
+            document.getElementById('nameGroup').classList.toggle('hidden', isLogin);
+            document.getElementById('phoneGroup').classList.toggle('hidden', isLogin);
+            
+            if (!isLogin) {
+                document.getElementById('name').required = true;
+                selectUserType('client');
+            } else {
+                document.getElementById('name').required = false;
+            }
+            
+            hideAlert();
+        }
+
+        function selectUserType(type) {
+            userType = type;
+            const clientBtn = document.getElementById('clientTypeBtn');
+            const barbershopBtn = document.getElementById('barbershopTypeBtn');
+            
+            if (type === 'client') {
+                clientBtn.className = 'btn btn-primary';
+                barbershopBtn.className = 'btn btn-secondary';
+                document.getElementById('nameLabel').textContent = 'Nome Completo';
+            } else {
+                clientBtn.className = 'btn btn-secondary';
+                barbershopBtn.className = 'btn btn-primary';
+                document.getElementById('nameLabel').textContent = 'Nome da Barbearia';
+            }
+        }
+
+        function showAlert(message, isError = true) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert ${isError ? 'alert-error' : 'alert-success'}`;
+            alertBox.textContent = message;
+        }
+
+        function hideAlert() {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.classList.add('hidden');
+        }
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            hideAlert();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processando...';
+
+            try {
+                const formData = new FormData(event.target);
+                const endpoint = isLogin ? '/auth/login' : '/auth/register';
+                
+                let payload;
+                if (isLogin) {
+                    payload = {
+                        email: formData.get('email'),
+                        password: formData.get('password')
+                    };
+                } else {
+                    payload = {
+                        email: formData.get('email'),
+                        password: formData.get('password'),
+                        name: formData.get('name'),
+                        phone: formData.get('phone') || null,
+                        user_type: userType
+                    };
+                }
+
+                const response = await apiCall(endpoint, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                setAuth(response.token, response.user);
+                
+                if (response.user.user_type === 'client') {
+                    window.location.href = '/client-dashboard.html';
+                } else {
+                    window.location.href = '/barbershop-dashboard.html';
+                }
+            } catch (error) {
+                showAlert(error.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        }
+    </script>
+</body>
+</html>
