@@ -1,0 +1,146 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Fundo geral */
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Container central */
+.container {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
+
+/* Card */
+.card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 35px 30px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  color: #fff;
+  animation: fadeUp 0.8s ease;
+}
+
+/* Animação suave */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Título */
+.card h1 {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+/* Subtítulo */
+.subtitle {
+  text-align: center;
+  font-size: 0.95rem;
+  opacity: 0.85;
+  margin-bottom: 30px;
+}
+
+/* Labels */
+.card label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Inputs */
+.card input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  margin-bottom: 18px;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+}
+
+.card input::placeholder {
+  color: #999;
+}
+
+.card input:focus {
+  transform: scale(1.02);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.35);
+}
+
+/* Botão */
+.card button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 5px;
+}
+
+.card button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(255, 118, 150, 0.5);
+}
+
+.card button:active {
+  transform: translateY(0);
+}
+
+/* Link de login */
+.login-link {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 0.9rem;
+}
+
+.login-link a {
+  color: #ffd1e8;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.login-link a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+  .card {
+    padding: 28px 22px;
+  }
+
+  .card h1 {
+    font-size: 1.8rem;
+  }
+}
