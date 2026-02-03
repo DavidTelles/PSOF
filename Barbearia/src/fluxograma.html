@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Fluxograma - App Barbearia</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true });
+  </script>
+</head>
+<body>
+
+<h2>Fluxograma do Sistema</h2>
+
+<div class="mermaid">
+flowchart TD
+
+    Inicio((Início))
+    Inicio --> Tipo{Cliente<br/>ou<br/>Barbeiro?}
+
+    %% ===== CLIENTE =====
+    Tipo -->|Cliente| ClienteEntrar[Entrar no site]
+    ClienteEntrar --> ClienteLogin{Login / Cadastrar}
+
+    ClienteLogin -->|Cadastrar| ClienteCadastro[Adicionar email, senha<br/>e confirmar senha]
+    ClienteCadastro --> VerificaCliente{Verifica se existe}
+    VerificaCliente -->|Existe| ClienteLogado[Entrou]
+    VerificaCliente -->|Não existe| ClienteLogin
+
+    ClienteLogin -->|Login| VerificaLoginCliente{Verifica se existe}
+    VerificaLoginCliente -->|Existe| ClienteLogado
+    VerificaLoginCliente -->|Não existe| ClienteLogin
+
+    ClienteLogado --> Agendar{Agendar horário?}
+    Agendar -->|Sim| Horarios[Mostra horários disponíveis]
+    Horarios --> Escolhe[Cliente escolhe um horário]
+    Escolhe --> Conversa{Conversar com o barbeiro?}
+    Conversa -->|Sim| Chat[Conversar com o barbeiro]
+    Conversa -->|Não| FimCliente((Sai do aplicativo))
+    Agendar -->|Não| FimCliente
+
+    %% ===== BARBEIRO =====
+    Tipo -->|Barbeiro| BarbeiroEntrar[Entrar no site]
+    BarbeiroEntrar --> BarbeiroLogin{Login / Cadastrar}
+
+    BarbeiroLogin -->|Cadastrar| BarbeiroCadastro[Adicionar email, senha<br/>e confirmar senha]
+    BarbeiroCadastro --> VerificaBarbeiro{Verifica se existe}
+    VerificaBarbeiro -->|Existe| BarbeiroLogado[Entrou]
+    VerificaBarbeiro -->|Não existe| BarbeiroLogin
+
+    BarbeiroLogin -->|Login| VerificaLoginBarbeiro{Verifica se existe}
+    VerificaLoginBarbeiro -->|Existe| BarbeiroLogado
+    VerificaLoginBarbeiro -->|Não existe| BarbeiroLogin
+
+    BarbeiroLogado --> Postar[Postar horários disponíveis]
+    Postar --> VerMarcados[Ver horários marcados]
+    VerMarcados --> FimBarbeiro((Sai do aplicativo))
+</div>
+
+</body>
+</html>

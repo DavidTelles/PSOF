@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbearia Prime - Agendamento</title>
+    <link rel="stylesheet" href="../styles/style.css">
+</head>
+<body>
+    <header>
+        <h1>Barbearia Prime</h1>
+        <p>Agende seu horário ou gerencie como barbeiro</p>
+    </header>
+
+    <section class="form-section">
+        <div class="card">
+            <h2>Novo Agendamento</h2>
+            <form id="agendamentoForm">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" required>
+
+                <label for="tipo">Tipo de Serviço:</label>
+                <select id="tipo" required>
+                    <option value="">Selecione</option>
+                    <option value="Corte de Cabelo">Corte de Cabelo</option>
+                    <option value="Barba">Barba</option>
+                    <option value="Corte + Barba">Corte + Barba</option>
+                </select>
+
+                <label for="data">Data:</label>
+                <input type="date" id="data" required>
+
+                <label for="hora">Hora:</label>
+                <input type="time" id="hora" required>
+
+                <label for="usuario">Cliente ou Barbeiro:</label>
+                <select id="usuario" required>
+                    <option value="">Selecione</option>
+                    <option value="Cliente">Cliente</option>
+                    <option value="Barbeiro">Barbeiro</option>
+                </select>
+
+                <button type="submit">Agendar</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="lista-section">
+        <h2>Agendamentos</h2>
+        <div id="listaAgendamentos"></div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
